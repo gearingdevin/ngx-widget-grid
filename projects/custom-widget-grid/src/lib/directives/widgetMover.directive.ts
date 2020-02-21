@@ -54,14 +54,8 @@ export class NgxWidgetMoverDirective {
 
   @HostListener('mousedown', ['$event'])
   onDown(event: MouseEvent) {
-    //event.preventDefault();
-console.log(this.mouseThreshold);
     this.initMousePosition[0] = Math.abs(event.offsetX);
     this.initMousePosition[1] = Math.abs(event.offsetY);
-
-    // this.mouseThreshold[0] = this.gridPositions.width;
-    // this.mouseThreshold[1] = this.gridPositions.height;
-    // //this.gridposition gridDimensions.width
 
     this.startPosition = this.gridCmp.getWidgetPosition(this.widgetCmp);
     const widgetContainer = this.widgetCmp.getEl().nativeElement;
@@ -77,15 +71,10 @@ console.log(this.mouseThreshold);
            this.eventOffsetY = event.offsetY || event.layerY;
 
           this.desiredPosition = { top: this.startRender.top, left: this.startRender.left };
-    //this.enableDrag = this.widgetCmp.getConfig().id;
-    // if((this.initMousePosition[0] + this.mouseThreshold[0]) < Math.abs[event.offsetX] && (this.initMousePosition[1] + this.mouseThreshold[1]) < Math.abs[event.offsetY] )
-    // if (typeof PointerEvent !== 'undefined') {
-    //   window.addEventListener('pointermove', this._onMoveListener);
-    //   window.addEventListener('pointerup', this._onUpListener);
-    // } else {
+
        window.addEventListener('mousemove', this._onMoveListener);
        window.addEventListener('mouseup', this._onUpListener);
-    // }
+
 
 
   }
@@ -94,20 +83,7 @@ console.log(this.mouseThreshold);
       if ((((this.initMousePosition[0] + this.mouseThreshold[0]) < Math.abs(event.offsetX)) || ((this.initMousePosition[1] + this.mouseThreshold[1]) < Math.abs(event.offsetY)) || this.thresholdPassedInit)) {
         if (!this.thresholdPassedInit) {
           this.renderer.addClass(this.widgetCmp.getEl().nativeElement, 'wg-moving');
-          //const widgetContainer = this.widgetCmp.getEl().nativeElement;
 
-          // this.startPosition = this.gridCmp.getWidgetPosition(this.widgetCmp);
-
-          // this.startRender = {
-          //   top: widgetContainer.offsetTop,
-          //   left: widgetContainer.offsetLeft,
-          //   height: widgetContainer.clientHeight,
-          //   width: widgetContainer.clientWidth
-          // }; // pixel values
-
-          
-
-          // this.desiredPosition = { top: this.startRender.top, left: this.startRender.left };
 
           this.moverOffset = new Rectangle({
             top: this.eventOffsetY + this.el.nativeElement.offsetTop || 0,
