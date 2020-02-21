@@ -42,7 +42,7 @@ export class NgxWidgetMoverDirective {
 
 
   public initMousePosition = [0, 0];
-  public mouseThreshold = [30, 30];
+  public mouseThreshold = [5, 5];
   public thresholdPassedInit = false;
 
 
@@ -54,6 +54,10 @@ export class NgxWidgetMoverDirective {
 
     this.initMousePosition[0] = Math.abs(event.offsetX);
     this.initMousePosition[1] = Math.abs(event.offsetY);
+
+    this.mouseThreshold[0] = this.gridPositions.width;
+    this.mouseThreshold[1] = this.gridPositions.height;
+    //this.gridposition gridDimensions.width
 
     this.startPosition = this.gridCmp.getWidgetPosition(this.widgetCmp);
     const widgetContainer = this.widgetCmp.getEl().nativeElement;

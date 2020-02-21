@@ -127,33 +127,33 @@
         }
       }
     },
-    "ngx-widget-grid": {
-      "root": "projects/ngx-widget-grid",
-      "sourceRoot": "projects/ngx-widget-grid/src",
+    "custom-widget-grid": {
+      "root": "projects/custom-widget-grid",
+      "sourceRoot": "projects/custom-widget-grid/src",
       "projectType": "library",
       "prefix": "ngx",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/ngx-widget-grid/tsconfig.lib.json",
-            "project": "projects/ngx-widget-grid/ng-package.json"
+            "tsConfig": "projects/custom-widget-grid/tsconfig.lib.json",
+            "project": "projects/custom-widget-grid/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-widget-grid/src/test.ts",
-            "tsConfig": "projects/ngx-widget-grid/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-widget-grid/karma.conf.js"
+            "main": "projects/custom-widget-grid/src/test.ts",
+            "tsConfig": "projects/custom-widget-grid/tsconfig.spec.json",
+            "karmaConfig": "projects/custom-widget-grid/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ngx-widget-grid/tsconfig.lib.json",
-              "projects/ngx-widget-grid/tsconfig.spec.json"
+              "projects/custom-widget-grid/tsconfig.lib.json",
+              "projects/custom-widget-grid/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

@@ -20,11 +20,11 @@
       "dom"
     ],
     "paths": {
-      "ngx-widget-grid": [
-        "dist/ngx-widget-grid"
+      "custom-widget-grid": [
+        "dist/custom-widget-grid"
       ],
-      "ngx-widget-grid/*": [
-        "dist/ngx-widget-grid/*"
+      "custom-widget-grid/*": [
+        "dist/custom-widget-grid/*"
       ]
     }
   }
