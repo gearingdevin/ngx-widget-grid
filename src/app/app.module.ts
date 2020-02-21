@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './components/root/app.component';
-import { NgxWidgetGridModule } from 'ngx-widget-grid';
+import { NgxWidgetGridModule } from 'custom-widget-grid';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule, ClrFormsModule } from '@clr/angular';
 import { AppModuleRouting } from './app.module.routing';

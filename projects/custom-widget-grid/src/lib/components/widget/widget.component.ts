@@ -15,6 +15,7 @@ export class NgxWidgetComponent {
   @Output()
   positionChange: EventEmitter<Rectangle> = new EventEmitter();
   @Input() movable = false;
+  @Input() threshold = [50,50];
   public allDirections = RESIZE_DIRECTIONS;
   public isTopResizable = false;
   public isRightResizable = false;
@@ -25,8 +26,10 @@ export class NgxWidgetComponent {
   public isBottomRightResizable = false;
   public isBottomLeftResizable = false;
   public widgetConfig: WidgetConfig;
+  // public threshold = [];
   public _position: Rectangle;
   public _resizable = false;
+  // public _threshold = [0,0];
   public _resizeDirections: RESIZE_DIRECTIONS[] = ALL_DIRECTIONS;
 
   constructor(private elRef: ElementRef) {
@@ -36,6 +39,17 @@ export class NgxWidgetComponent {
   get position(): Rectangle {
     return this._position;
   }
+
+  // get threshold() {
+  //   return this._threshold;
+  // }
+
+  // @Input()
+  // set threshold(threshold) {
+  //   this._threshold = threshold;
+  //   // this.widgetConfig.threshold = threshold;
+  // }
+//  @Input() threshold = [50,50];
 
   @Input()
   set position(position: Rectangle) {

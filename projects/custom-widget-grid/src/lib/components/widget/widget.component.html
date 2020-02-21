@@ -3,7 +3,9 @@
 </div>
 <div [ngxWidgetMover]="swapOnMove"
      *ngIf="movable"
-     class="wg-widget-edit-move">
+     class="wg-widget-edit-move"
+     threshold="threshold"
+     >
 </div>
 <div *ngIf="resizable"
      class="wg-widget-edit-resize">

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgxWidgetGridComponent, WidgetPositionChange } from 'ngx-widget-grid';
+import { NgxWidgetGridComponent, WidgetPositionChange } from 'custom-widget-grid';
 
 @Component({
              selector: 'app-basic-example',
@@ -39,10 +39,14 @@ export class BasicExampleComponent implements OnInit {
   public showGrid = false;
   public highlightNextPosition = false;
   private _editable = false;
+  private _threshold = [1,1];
   public set editable(editable: boolean) {
     this._editable = editable;
     this.showGrid = editable;
   }
+
+
+
 
   public get editable() {
     return this._editable;

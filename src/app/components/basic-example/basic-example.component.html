@@ -62,6 +62,7 @@
       <ngx-widget *ngFor="let widget of widgets;let $index = index;"
                   [position]="widget"
                   [movable]="editable"
+                  [threshold]="[100,100]"
                   [resizable]="editable"
                   [swapOnMove]="swapWidgets">
         <div style="height:100%;width:100%; display:flex;">

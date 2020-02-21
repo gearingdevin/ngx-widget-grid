@@ -26,6 +26,7 @@ export class NgxWidgetMoverDirective {
   public enableDrag: string = null;
   private _onMoveListener = this.onMove.bind(this);
   private _onUpListener = this.onUp.bind(this);
+  public mouseThreshold = [1, 1];
 
 
   @Input()
@@ -37,27 +38,30 @@ export class NgxWidgetMoverDirective {
     private gridCmp: NgxWidgetGridComponent,
     @Inject(forwardRef(() => NgxWidgetComponent))
     private widgetCmp: NgxWidgetComponent) {
+      this.mouseThreshold = widgetCmp.threshold;
   }
 
 
 
-  public initMousePosition = [0, 0];
-  public mouseThreshold = [5, 5];
-  public thresholdPassedInit = false;
+  private initMousePosition = [0, 0];
 
+  private thresholdPassedInit = false;
+
+  private eventOffsetX;
+  private eventOffsetY;
 
 
 
   @HostListener('mousedown', ['$event'])
   onDown(event: MouseEvent) {
     //event.preventDefault();
-
+console.log(this.mouseThreshold);
     this.initMousePosition[0] = Math.abs(event.offsetX);
     this.initMousePosition[1] = Math.abs(event.offsetY);
 
-    this.mouseThreshold[0] = this.gridPositions.width;
-    this.mouseThreshold[1] = this.gridPositions.height;
-    //this.gridposition gridDimensions.width
+    // this.mouseThreshold[0] = this.gridPositions.width;
+    // this.mouseThreshold[1] = this.gridPositions.height;
+    // //this.gridposition gridDimensions.width
 
     this.startPosition = this.gridCmp.getWidgetPosition(this.widgetCmp);
     const widgetContainer = this.widgetCmp.getEl().nativeElement;
@@ -68,6 +72,9 @@ export class NgxWidgetMoverDirective {
             height: widgetContainer.clientHeight,
             width: widgetContainer.clientWidth
           }; 
+
+           this.eventOffsetX = event.offsetX || event.layerX;
+           this.eventOffsetY = event.offsetY || event.layerY;
 
           this.desiredPosition = { top: this.startRender.top, left: this.startRender.left };
     //this.enableDrag = this.widgetCmp.getConfig().id;
@@ -87,7 +94,7 @@ export class NgxWidgetMoverDirective {
       if ((((this.initMousePosition[0] + this.mouseThreshold[0]) < Math.abs(event.offsetX)) || ((this.initMousePosition[1] + this.mouseThreshold[1]) < Math.abs(event.offsetY)) || this.thresholdPassedInit)) {
         if (!this.thresholdPassedInit) {
           this.renderer.addClass(this.widgetCmp.getEl().nativeElement, 'wg-moving');
-          const widgetContainer = this.widgetCmp.getEl().nativeElement;
+          //const widgetContainer = this.widgetCmp.getEl().nativeElement;
 
           // this.startPosition = this.gridCmp.getWidgetPosition(this.widgetCmp);
 
@@ -98,14 +105,13 @@ export class NgxWidgetMoverDirective {
           //   width: widgetContainer.clientWidth
           // }; // pixel values
 
-          const eventOffsetX = event.offsetX || event.layerX;
-          const eventOffsetY = event.offsetY || event.layerY;
+          
 
           // this.desiredPosition = { top: this.startRender.top, left: this.startRender.left };
 
           this.moverOffset = new Rectangle({
-            top: eventOffsetY + this.el.nativeElement.offsetTop || 0,
-            left: eventOffsetX + this.el.nativeElement.offsetLeft || 0
+            top: this.eventOffsetY + this.el.nativeElement.offsetTop || 0,
+            left: this.eventOffsetX + this.el.nativeElement.offsetLeft || 0
           });
 
           this.gridPositions = this.gridCmp.getGridRectangle();
