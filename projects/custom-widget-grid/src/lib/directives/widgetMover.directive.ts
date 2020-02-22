@@ -173,6 +173,7 @@ export class NgxWidgetMoverDirective {
         wdgt.getEl().nativeElement.style.boxShadow = '0px 0px 0px 0px rgba(0, 0, 0, 0.4)';
         wdgt.itemSelected = false;
         wdgt.itemClicked = false;
+        wdgt.getEl().nativeElement.classList.remove("activeWidget");
         //wdgt.isActive = false;
       }
     });
@@ -207,6 +208,7 @@ export class NgxWidgetMoverDirective {
         //if
         this.widgetCmp.itemSelected = false;
         this.widgetCmp.getEl().nativeElement.style.boxShadow = '0px 0px 0px 0px rgba(0, 0, 0, 0.4)';
+        this.widgetCmp.getEl().nativeElement.classList.remove("activeWidget");
         //box-shadow: 0px 0px 0px 4px #4f93df;
 
 
