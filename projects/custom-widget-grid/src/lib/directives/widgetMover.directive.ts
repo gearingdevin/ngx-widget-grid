@@ -26,10 +26,11 @@ export class NgxWidgetMoverDirective {
   public enableDrag: string = null;
   private _onMoveListener = this.onMove.bind(this);
   private _onUpListener = this.onUp.bind(this);
-  public mouseThreshold = [1, 1];
+  public mouseThreshold = [20, 20];
 
 
-  private itemClicked = false;
+  //private itemClicked = false;
+  //private itemSelected = false;
 
   @Input()
   public ngxWidgetMover = false;
@@ -52,15 +53,17 @@ export class NgxWidgetMoverDirective {
   private eventOffsetX;
   private eventOffsetY;
 
-  
+
+  private moving = false;
 
 
   @HostListener('mousedown', ['$event'])
   onDown(event: MouseEvent) {
 
-    if(this.radioSelect){
-      this.widgetCmp.isActive = !this.widgetCmp.isActive;
-       //this.itemClicked = !this.itemClicked;
+    if (this.radioSelect) {
+      //this.widgetCmp.isActive = !this.widgetCmp.isActive;
+      this.widgetCmp.itemClicked = !this.widgetCmp.itemClicked;
+      this.toggleDrag();
     }
 
     this.initMousePosition[0] = Math.abs(event.offsetX);
@@ -90,98 +93,125 @@ export class NgxWidgetMoverDirective {
   }
 
   onMove(event: MouseEvent) {
-    //if(this.widgetCmp.isActive){
+
     if ((((this.initMousePosition[0] + this.mouseThreshold[0]) < Math.abs(event.offsetX)) || ((this.initMousePosition[1] + this.mouseThreshold[1]) < Math.abs(event.offsetY)) || this.thresholdPassedInit)) {
-      //this.widgetCmp.isActive = !this.widgetCmp.isActive;
-      this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
-      if (!this.thresholdPassedInit ) {
-
-        
-        //this.toggleOff();
-        this.widgetCmp.isActive = false;
-
-        this.renderer.addClass(this.widgetCmp.getEl().nativeElement, 'wg-moving');
+      // this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+      // this.itemClicked = false;
+      this.moving = true;
+      if (this.widgetCmp.itemClicked) {
+        if (!this.thresholdPassedInit) {
 
 
-        this.moverOffset = new Rectangle({
-          top: this.eventOffsetY + this.el.nativeElement.offsetTop || 0,
-          left: this.eventOffsetX + this.el.nativeElement.offsetLeft || 0
-        });
+          //this.widgetCmp.isActive = false;
 
-        this.gridPositions = this.gridCmp.getGridRectangle();
-        this.cellHeight = (this.gridCmp.grid.cellSize.height / 100) * this.gridPositions.height;
-        this.cellWidth = (this.gridCmp.grid.cellSize.width / 100) * this.gridPositions.width;
+          this.renderer.addClass(this.widgetCmp.getEl().nativeElement, 'wg-moving');
 
 
-        this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'z-index', this.ngxWidgetMover ? 0 : 100);
-        this.thresholdPassedInit = true;
+          this.moverOffset = new Rectangle({
+            top: this.eventOffsetY + this.el.nativeElement.offsetTop || 0,
+            left: this.eventOffsetX + this.el.nativeElement.offsetLeft || 0
+          });
+
+          this.gridPositions = this.gridCmp.getGridRectangle();
+          this.cellHeight = (this.gridCmp.grid.cellSize.height / 100) * this.gridPositions.height;
+          this.cellWidth = (this.gridCmp.grid.cellSize.width / 100) * this.gridPositions.width;
+
+
+          this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'z-index', this.ngxWidgetMover ? 0 : 100);
+          this.thresholdPassedInit = true;
+        }
+
+
+
+
+        event.preventDefault();
+        const eventClientX = event.clientX;
+        const eventClientY = event.clientY;
+        const startRender = this.startRender;
+        const gridDimensions = this.gridPositions;
+        const desiredPosition = this.desiredPosition;
+        // normalize the drag position
+        const dragPositionX = Math.round(eventClientX) - gridDimensions.left,
+          dragPositionY = Math.round(eventClientY) - gridDimensions.top;
+
+        desiredPosition.top = Math.min(
+          Math.max(dragPositionY - this.moverOffset.top, 0),
+          gridDimensions.height - startRender.height - 1
+        );
+        desiredPosition.left = Math.min(
+          Math.max(dragPositionX - this.moverOffset.left, 0),
+          gridDimensions.width - startRender.width - 1
+        );
+        const currentFinalPos: Rectangle = this.determineFinalPos(this.startPosition,
+          desiredPosition,
+          this.startRender,
+          this.cellHeight,
+          this.cellWidth);
+        this.gridCmp.highlightArea(currentFinalPos);
+
+        this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'top', desiredPosition.top + 'px');
+        this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'left', desiredPosition.left + 'px');
       }
-      // else{
-      //   this.widgetCmp.isActive = !this.widgetCmp.isActive;
-      // }
-
-
-
-      event.preventDefault();
-      const eventClientX = event.clientX;
-      const eventClientY = event.clientY;
-      const startRender = this.startRender;
-      const gridDimensions = this.gridPositions;
-      const desiredPosition = this.desiredPosition;
-      // normalize the drag position
-      const dragPositionX = Math.round(eventClientX) - gridDimensions.left,
-        dragPositionY = Math.round(eventClientY) - gridDimensions.top;
-
-      desiredPosition.top = Math.min(
-        Math.max(dragPositionY - this.moverOffset.top, 0),
-        gridDimensions.height - startRender.height - 1
-      );
-      desiredPosition.left = Math.min(
-        Math.max(dragPositionX - this.moverOffset.left, 0),
-        gridDimensions.width - startRender.width - 1
-      );
-      const currentFinalPos: Rectangle = this.determineFinalPos(this.startPosition,
-        desiredPosition,
-        this.startRender,
-        this.cellHeight,
-        this.cellWidth);
-      this.gridCmp.highlightArea(currentFinalPos);
-
-      this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'top', desiredPosition.top + 'px');
-      this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'left', desiredPosition.left + 'px');
+      // this.itemClicked = true;
     }
-  //}
 
   }
 
-  toggleOff(){
-    this.widgetCmp.isActive = false;
+  toggleOff() {
+    //this.widgetCmp.isActive = false;
+ 
+    this.moving = false;
     this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
-    this.widgetCmp.getEl().nativeElement.removeClass("active");
+    //this.widgetCmp.getEl().nativeElement.removeClass("active");
+    //this.itemSelected = false;
   }
 
-  toggleOn(thisWdgt){
-    thisWdgt.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.7)';
-    thisWdgt.getEl().nativeElement.addClass("active");
+  toggleDrag(){
     var widgetList = this.gridCmp.getWidgets();
-    widgetList.forEach(wdgt=> {
-      if(wdgt != this.widgetCmp){
+    widgetList.forEach(wdgt => {
+      if (wdgt != this.widgetCmp) {
         wdgt.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
-        wdgt.isActive = false;
+        wdgt.itemSelected = false;
+        wdgt.itemClicked = false;
+        //wdgt.isActive = false;
       }
-   });
+    });
+  }
 
-    
+  toggleOn(thisWdgt) {
+    thisWdgt.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.7)';
+    this.widgetCmp.itemSelected = true;
+    //thisWdgt.getEl().nativeElement.addClass("active");
+    var widgetList = this.gridCmp.getWidgets();
+    widgetList.forEach(wdgt => {
+      if (wdgt != this.widgetCmp) {
+        wdgt.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+        //wdgt.isActive = false;
+      }
+    });
   }
 
   onUp(event: MouseEvent) {
-    if(this.widgetCmp.isActive){
-      this.toggleOn(this.widgetCmp);
-    }
-    else{
-      this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
-    }
 
+    if (this.widgetCmp.itemSelected && this.moving || this.widgetCmp.itemClicked && this.moving) {
+      this.widgetCmp.itemClicked = !this.widgetCmp.itemClicked;
+    }
+    //console.log("itemClicked: " + this.widgetCmp.itemClicked + "  moving: " + this.moving + "  itemSelected: " + this.widgetCmp.itemSelected);
+
+
+    if (this.radioSelect && !this.moving) {
+      if (this.widgetCmp.itemClicked) {
+        this.toggleOn(this.widgetCmp);
+      }
+      else {
+        //if
+        this.widgetCmp.itemSelected = false;
+        this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+
+
+      }
+    }
+    this.moving = false;
     if (this.thresholdPassedInit) {
       this.thresholdPassedInit = false;
       this.renderer.addClass(this.widgetCmp.getEl().nativeElement, 'wg-moving');
@@ -230,6 +260,8 @@ export class NgxWidgetMoverDirective {
       this.renderer.removeStyle(this.widgetCmp.getEl().nativeElement, 'z-index');
       this.enableDrag = null;
     }
+
+
 
     window.removeEventListener('mousemove', this._onMoveListener);
     window.removeEventListener('mouseup', this._onUpListener);

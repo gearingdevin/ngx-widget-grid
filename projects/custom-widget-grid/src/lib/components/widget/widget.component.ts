@@ -25,7 +25,13 @@ export class NgxWidgetComponent {
   public isTopLeftResizable = false;
   public isBottomRightResizable = false;
   public isBottomLeftResizable = false;
+
   public isActive = false;
+
+public itemClicked = false;
+public itemSelected = false;
+
+
   public widgetConfig: WidgetConfig;
   // public threshold = [];
   public _position: Rectangle;
@@ -41,7 +47,7 @@ export class NgxWidgetComponent {
     return this._position;
   }
 
-  
+
 
   // get threshold() {
   //   return this._threshold;
