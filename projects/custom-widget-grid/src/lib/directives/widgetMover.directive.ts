@@ -161,7 +161,7 @@ export class NgxWidgetMoverDirective {
     //this.widgetCmp.isActive = false;
  
     this.moving = false;
-    this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+    this.widgetCmp.getEl().nativeElement.style.boxShadow = '0px 0px 0px rgba(0, 0, 0, 0.4)';
     //this.widgetCmp.getEl().nativeElement.removeClass("active");
     //this.itemSelected = false;
   }
@@ -170,7 +170,7 @@ export class NgxWidgetMoverDirective {
     var widgetList = this.gridCmp.getWidgets();
     widgetList.forEach(wdgt => {
       if (wdgt != this.widgetCmp) {
-        wdgt.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+        wdgt.getEl().nativeElement.style.boxShadow = '0px 0px 0px 0px rgba(0, 0, 0, 0.4)';
         wdgt.itemSelected = false;
         wdgt.itemClicked = false;
         //wdgt.isActive = false;
@@ -179,13 +179,13 @@ export class NgxWidgetMoverDirective {
   }
 
   toggleOn(thisWdgt) {
-    thisWdgt.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.7)';
+    thisWdgt.getEl().nativeElement.style.boxShadow = '0px 0px 0px 4px rgba(0, 0, 0, 0.4)';
     this.widgetCmp.itemSelected = true;
     //thisWdgt.getEl().nativeElement.addClass("active");
     var widgetList = this.gridCmp.getWidgets();
     widgetList.forEach(wdgt => {
       if (wdgt != this.widgetCmp) {
-        wdgt.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+        wdgt.getEl().nativeElement.style.boxShadow = '0px 0px 0px 0px rgba(0, 0, 0, 0.4)';
         //wdgt.isActive = false;
       }
     });
@@ -206,7 +206,8 @@ export class NgxWidgetMoverDirective {
       else {
         //if
         this.widgetCmp.itemSelected = false;
-        this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+        this.widgetCmp.getEl().nativeElement.style.boxShadow = '0px 0px 0px 0px rgba(0, 0, 0, 0.4)';
+        //box-shadow: 0px 0px 0px 4px #4f93df;
 
 
       }

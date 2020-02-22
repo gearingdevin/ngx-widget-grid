@@ -15,7 +15,7 @@ export class NgxWidgetComponent {
   @Output()
   positionChange: EventEmitter<Rectangle> = new EventEmitter();
   @Input() movable = false;
-  @Input() threshold = [50,50];
+  @Input() threshold = [1,1];
   public allDirections = RESIZE_DIRECTIONS;
   public isTopResizable = false;
   public isRightResizable = false;
