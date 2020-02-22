@@ -37,6 +37,7 @@ export class NgxWidgetGridComponent implements AfterViewInit {
   public gridAlreadyFull = false;
   public _rows: number;
   public _columns: number;
+  public _radioSelect: boolean;
   public _highlightNextPosition = false;
 
   constructor(private el: ElementRef,
@@ -64,6 +65,15 @@ export class NgxWidgetGridComponent implements AfterViewInit {
   set columns(cols) {
     this._columns = cols;
     this.updateGridSize();
+  }
+
+  @Input()
+  set radioSelect(radioSelect){
+    this._radioSelect = radioSelect;
+  }
+
+  get radioSelect(){
+    return this._radioSelect;
   }
 
   get highlightNextPosition(): boolean {
@@ -249,6 +259,10 @@ export class NgxWidgetGridComponent implements AfterViewInit {
     return this.widgetComponents.find(widgetCmp => {
       return widgetCmp.getConfig().id === widgetId;
     }) || null;
+  }
+
+  getWidgets(){
+    return this.widgetComponents;
   }
 
   assessAvailableGridSpace() {

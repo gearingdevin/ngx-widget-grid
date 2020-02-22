@@ -29,6 +29,8 @@ export class NgxWidgetMoverDirective {
   public mouseThreshold = [1, 1];
 
 
+  private itemClicked = false;
+
   @Input()
   public ngxWidgetMover = false;
 
@@ -38,102 +40,148 @@ export class NgxWidgetMoverDirective {
     private gridCmp: NgxWidgetGridComponent,
     @Inject(forwardRef(() => NgxWidgetComponent))
     private widgetCmp: NgxWidgetComponent) {
-      this.mouseThreshold = widgetCmp.threshold;
+    this.mouseThreshold = widgetCmp.threshold;
+    this.radioSelect = gridCmp.radioSelect;
   }
 
-
+  private radioSelect = false;
+  //private itemSelected = false;
 
   private initMousePosition = [0, 0];
-
   private thresholdPassedInit = false;
-
   private eventOffsetX;
   private eventOffsetY;
 
+  
 
 
   @HostListener('mousedown', ['$event'])
   onDown(event: MouseEvent) {
+
+    if(this.radioSelect){
+      this.widgetCmp.isActive = !this.widgetCmp.isActive;
+       //this.itemClicked = !this.itemClicked;
+    }
+
     this.initMousePosition[0] = Math.abs(event.offsetX);
     this.initMousePosition[1] = Math.abs(event.offsetY);
 
     this.startPosition = this.gridCmp.getWidgetPosition(this.widgetCmp);
+
     const widgetContainer = this.widgetCmp.getEl().nativeElement;
 
-          this.startRender = {
-            top: widgetContainer.offsetTop,
-            left: widgetContainer.offsetLeft,
-            height: widgetContainer.clientHeight,
-            width: widgetContainer.clientWidth
-          }; 
+    this.startRender = {
+      top: widgetContainer.offsetTop,
+      left: widgetContainer.offsetLeft,
+      height: widgetContainer.clientHeight,
+      width: widgetContainer.clientWidth
+    };
 
-           this.eventOffsetX = event.offsetX || event.layerX;
-           this.eventOffsetY = event.offsetY || event.layerY;
+    this.eventOffsetX = event.offsetX || event.layerX;
+    this.eventOffsetY = event.offsetY || event.layerY;
 
-          this.desiredPosition = { top: this.startRender.top, left: this.startRender.left };
+    this.desiredPosition = { top: this.startRender.top, left: this.startRender.left };
 
-       window.addEventListener('mousemove', this._onMoveListener);
-       window.addEventListener('mouseup', this._onUpListener);
+    window.addEventListener('mousemove', this._onMoveListener);
+    window.addEventListener('mouseup', this._onUpListener);
 
 
 
   }
 
   onMove(event: MouseEvent) {
-      if ((((this.initMousePosition[0] + this.mouseThreshold[0]) < Math.abs(event.offsetX)) || ((this.initMousePosition[1] + this.mouseThreshold[1]) < Math.abs(event.offsetY)) || this.thresholdPassedInit)) {
-        if (!this.thresholdPassedInit) {
-          this.renderer.addClass(this.widgetCmp.getEl().nativeElement, 'wg-moving');
+    //if(this.widgetCmp.isActive){
+    if ((((this.initMousePosition[0] + this.mouseThreshold[0]) < Math.abs(event.offsetX)) || ((this.initMousePosition[1] + this.mouseThreshold[1]) < Math.abs(event.offsetY)) || this.thresholdPassedInit)) {
+      //this.widgetCmp.isActive = !this.widgetCmp.isActive;
+      this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+      if (!this.thresholdPassedInit ) {
+
+        
+        //this.toggleOff();
+        this.widgetCmp.isActive = false;
+
+        this.renderer.addClass(this.widgetCmp.getEl().nativeElement, 'wg-moving');
 
 
-          this.moverOffset = new Rectangle({
-            top: this.eventOffsetY + this.el.nativeElement.offsetTop || 0,
-            left: this.eventOffsetX + this.el.nativeElement.offsetLeft || 0
-          });
+        this.moverOffset = new Rectangle({
+          top: this.eventOffsetY + this.el.nativeElement.offsetTop || 0,
+          left: this.eventOffsetX + this.el.nativeElement.offsetLeft || 0
+        });
 
-          this.gridPositions = this.gridCmp.getGridRectangle();
-          this.cellHeight = (this.gridCmp.grid.cellSize.height / 100) * this.gridPositions.height;
-          this.cellWidth = (this.gridCmp.grid.cellSize.width / 100) * this.gridPositions.width;
-          
-
-          this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'z-index', this.ngxWidgetMover ? 0 : 100);
-          this.thresholdPassedInit = true;
-        }
+        this.gridPositions = this.gridCmp.getGridRectangle();
+        this.cellHeight = (this.gridCmp.grid.cellSize.height / 100) * this.gridPositions.height;
+        this.cellWidth = (this.gridCmp.grid.cellSize.width / 100) * this.gridPositions.width;
 
 
-
-        event.preventDefault();
-        const eventClientX = event.clientX;
-        const eventClientY = event.clientY;
-        const startRender = this.startRender;
-        const gridDimensions = this.gridPositions;
-        const desiredPosition = this.desiredPosition;
-        // normalize the drag position
-        const dragPositionX = Math.round(eventClientX) - gridDimensions.left,
-          dragPositionY = Math.round(eventClientY) - gridDimensions.top;
-
-        desiredPosition.top = Math.min(
-          Math.max(dragPositionY - this.moverOffset.top, 0),
-          gridDimensions.height - startRender.height - 1
-        );
-        desiredPosition.left = Math.min(
-          Math.max(dragPositionX - this.moverOffset.left, 0),
-          gridDimensions.width - startRender.width - 1
-        );
-        const currentFinalPos: Rectangle = this.determineFinalPos(this.startPosition,
-          desiredPosition,
-          this.startRender,
-          this.cellHeight,
-          this.cellWidth);
-        this.gridCmp.highlightArea(currentFinalPos);
-
-        this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'top', desiredPosition.top + 'px');
-        this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'left', desiredPosition.left + 'px');
+        this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'z-index', this.ngxWidgetMover ? 0 : 100);
+        this.thresholdPassedInit = true;
       }
+      // else{
+      //   this.widgetCmp.isActive = !this.widgetCmp.isActive;
+      // }
 
-    //}
+
+
+      event.preventDefault();
+      const eventClientX = event.clientX;
+      const eventClientY = event.clientY;
+      const startRender = this.startRender;
+      const gridDimensions = this.gridPositions;
+      const desiredPosition = this.desiredPosition;
+      // normalize the drag position
+      const dragPositionX = Math.round(eventClientX) - gridDimensions.left,
+        dragPositionY = Math.round(eventClientY) - gridDimensions.top;
+
+      desiredPosition.top = Math.min(
+        Math.max(dragPositionY - this.moverOffset.top, 0),
+        gridDimensions.height - startRender.height - 1
+      );
+      desiredPosition.left = Math.min(
+        Math.max(dragPositionX - this.moverOffset.left, 0),
+        gridDimensions.width - startRender.width - 1
+      );
+      const currentFinalPos: Rectangle = this.determineFinalPos(this.startPosition,
+        desiredPosition,
+        this.startRender,
+        this.cellHeight,
+        this.cellWidth);
+      this.gridCmp.highlightArea(currentFinalPos);
+
+      this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'top', desiredPosition.top + 'px');
+      this.renderer.setStyle(this.widgetCmp.getEl().nativeElement, 'left', desiredPosition.left + 'px');
+    }
+  //}
+
+  }
+
+  toggleOff(){
+    this.widgetCmp.isActive = false;
+    this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+    this.widgetCmp.getEl().nativeElement.removeClass("active");
+  }
+
+  toggleOn(thisWdgt){
+    thisWdgt.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.7)';
+    thisWdgt.getEl().nativeElement.addClass("active");
+    var widgetList = this.gridCmp.getWidgets();
+    widgetList.forEach(wdgt=> {
+      if(wdgt != this.widgetCmp){
+        wdgt.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+        wdgt.isActive = false;
+      }
+   });
+
+    
   }
 
   onUp(event: MouseEvent) {
+    if(this.widgetCmp.isActive){
+      this.toggleOn(this.widgetCmp);
+    }
+    else{
+      this.widgetCmp.getEl().nativeElement.style.border = '5px solid rgba(0,0,0, 0.0)';
+    }
+
     if (this.thresholdPassedInit) {
       this.thresholdPassedInit = false;
       this.renderer.addClass(this.widgetCmp.getEl().nativeElement, 'wg-moving');
@@ -183,9 +231,9 @@ export class NgxWidgetMoverDirective {
       this.enableDrag = null;
     }
 
-      window.removeEventListener('mousemove', this._onMoveListener);
-      window.removeEventListener('mouseup', this._onUpListener);
-    
+    window.removeEventListener('mousemove', this._onMoveListener);
+    window.removeEventListener('mouseup', this._onUpListener);
+
   }
 
   getAnchor(val: number, cellWOrH: number, marginFactor = 2): number {

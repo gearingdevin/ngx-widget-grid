@@ -54,6 +54,7 @@
   <div class="dashboard-page">
     <ngx-widget-grid [rows]="rows"
                      [columns]="cols"
+                     [radioSelect]="true"
                      [highlightNextPosition]="highlightNextPosition"
                      #grid
                      [showGrid]="showGrid"
@@ -63,7 +64,7 @@
                   [position]="widget"
                   [movable]="editable"
                   [threshold]="[100,100]"
-                  [resizable]="editable"
+                  [resizable]="false"
                   [swapOnMove]="swapWidgets">
         <div style="height:100%;width:100%; display:flex;">
           <div class="my-widgets"

@@ -9,6 +9,7 @@ export class GridRenderer {
   public cachedNextPosition: Rectangle;
   public obstructions: string[] = [];
   public _grid: Grid;
+  
 
   constructor(grid: Grid) {
     this.grid = grid || new Grid();

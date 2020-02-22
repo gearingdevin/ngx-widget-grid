@@ -6,6 +6,7 @@ export class Grid {
   private _rows = 3;
   private _columns = 3;
   private _cellSize: CellSize;
+  private _radioSelect= false;
 
   constructor(rows?: number, columns?: number) {
     if (+rows) {
@@ -19,6 +20,10 @@ export class Grid {
 
   get widgets() {
     return this._widgets;
+  }
+
+  get radioSelect(){
+    return this._radioSelect;
   }
 
   get rows() {
@@ -36,6 +41,8 @@ export class Grid {
   add(widget: WidgetConfig) {
     this._widgets.push(widget);
   }
+
+
 
   remove(widget: WidgetConfig) {
     const widgetIndex = this._widgets.indexOf(widget);

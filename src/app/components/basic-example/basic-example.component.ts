@@ -106,7 +106,7 @@ export class BasicExampleComponent implements OnInit {
     const s = saturation >= 0 && saturation <= 100 ? saturation : 80;
     const l = lightness >= 0 && lightness <= 100 ? lightness : 80;
     const a = alpha >= 0 && alpha <= 100 ? alpha : 100;
-    return `hsla(${h / 10},${s}%,${l}%,${a})`;
+    return `hsla(${h / 10},${s}%,${l}%,${0.20})`;
   }
 
   getRandomIntInclusive(min, max) {
