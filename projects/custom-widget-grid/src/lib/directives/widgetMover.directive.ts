@@ -181,7 +181,7 @@ export class NgxWidgetMoverDirective {
   toggleOn(thisWdgt) {
     thisWdgt.getEl().nativeElement.style.boxShadow = '0px 0px 0px 4px rgba(0, 0, 0, 0.4)';
     this.widgetCmp.itemSelected = true;
-    //thisWdgt.getEl().nativeElement.addClass("active");
+    thisWdgt.getEl().nativeElement.classList.add("activeWidget");
     var widgetList = this.gridCmp.getWidgets();
     widgetList.forEach(wdgt => {
       if (wdgt != this.widgetCmp) {
